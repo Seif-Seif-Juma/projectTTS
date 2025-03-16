@@ -1,39 +1,29 @@
 from TTS.api import TTS
-from typing import List, Dict
-
-def print_model_list(models: List[Dict], category: str):
-    print(f"\n{category} Models:")
-    print("-" * (len(category) + 8))
-    for idx, model in enumerate(models, 1):
-        print(f"{idx}. Language: {model.get('language', 'N/A')}")
-        print(f"   Name: {model.get('name', 'N/A')}")
-        print(f"   Dataset: {model.get('dataset', 'N/A')}")
-        print()
 
 def list_available_models():
+    print("Available Models:")
+    tts = TTS()
+    models = tts.list_models()
+    tts_models = models.list_tts_models()
+    for i, model in enumerate(tts_models, 1):
+        print(f"{i}. {model}")
+
+def generate_speech(text, model_name="tts_models/en/ljspeech/vits", output_file="output.wav"):
     try:
-        # Initialize TTS
-        print("Initializing TTS...")
-        tts = TTS()
+        print(f"\nInitializing TTS with model: {model_name}")
+        tts = TTS(model_name=model_name)
         
-        # Get available models using list_models()
-        print("Fetching available models...")
-        model_manager = tts.list_models()
-        
-        # Get specific model lists
-        tts_models = model_manager.list_tts_models()
-        vocoder_models = model_manager.list_vocoder_models()
-        
-        # Print TTS models
-        print_model_list(tts_models, "Text-to-Speech")
-        
-        # Print Vocoder models
-        print_model_list(vocoder_models, "Vocoder")
+        print(f"\nGenerating speech for text:\n\"{text}\"\n")
+        tts.tts_to_file(text=text, file_path=output_file)
+        print(f"\nAudio generated successfully in: {output_file}")
         
     except Exception as e:
         print(f"An error occurred: {str(e)}")
-        import traceback
-        print(traceback.format_exc())
 
 if __name__ == "__main__":
+    # List available models
     list_available_models()
+    
+    # Test speech generation with default model
+    sample_text = "Hello! This is a test of the text to speech system."
+    generate_speech(sample_text)

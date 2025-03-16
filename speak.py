@@ -1,14 +1,13 @@
-from TTS.api import TTS
-import sys
-import argparse
 
-def generate_speech(text, output_file="output.wav", model="tts_models/en/ljspeech/fast_pitch"):
+from TTS.api import TTS
+import argparse
+import sys
+
+def generate_speech(text, output_file="output.wav", model_name="tts_models/en/ljspeech/vits"):
     try:
-        # Initialize TTS with the model
-        print(f"Initializing TTS with model: {model}")
-        tts = TTS(model_name=model)
+        print(f"\nInitializing TTS with model: {model_name}")
+        tts = TTS(model_name=model_name)
         
-        # Generate the audio
         print(f"\nGenerating speech for text:\n\"{text}\"\n")
         tts.tts_to_file(text=text, file_path=output_file)
         print(f"\nAudio generated successfully in: {output_file}")
@@ -21,6 +20,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Generate speech from text")
     parser.add_argument("text", help="The text to convert to speech")
     parser.add_argument("-o", "--output", default="output.wav", help="Output file name (default: output.wav)")
-    args = parser.parse_args()
+    parser.add_argument("-m", "--model", default="tts_models/en/ljspeech/vits", 
+                       help="Model name (default: tts_models/en/ljspeech/vits)")
     
-    generate_speech(args.text, args.output)
+    args = parser.parse_args()
+    generate_speech(args.text, args.output, args.model)
